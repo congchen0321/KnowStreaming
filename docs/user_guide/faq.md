@@ -182,3 +182,14 @@ Node 版本: v12.22.12
 
 + 原因：由于数据库编码和我们提供的脚本不一致，数据库里的数据发生了乱码，因此出现权限识别失败问题。
 + 解决方案：清空数据库数据，将数据库字符集调整为utf8，最后重新执行[dml-logi.sql](https://github.com/didi/KnowStreaming/blob/master/km-dist/init/sql/dml-logi.sql)脚本导入数据即可。
+
+## 8.13、接入kerberos认证的kafka集群
+1、部署KnowStreaming机器上需要安装krb客户端
+2、替换/etc/krb5.conf文件为KDC的conf文件
+3、接入kafka集群时配置，配置信息根据实际情况填写
+{
+  "security.protocol": "SASL_PLAINTEXT",
+  "sasl.mechanism": "GSSAPI",
+  "sasl.jaas.config": "com.sun.security.auth.module.Krb5LoginModule required useKeyTab=true keyTab=\"/etc/keytab/kafka.keytab\" storeKey=true useTicketCache=false principal=\"kafka/kafka@TEST.COM\";",
+  "sasl.kerberos.service.name": "kafka"
+}
